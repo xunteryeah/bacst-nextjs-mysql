@@ -1,103 +1,190 @@
+
+"use client";
+
 import Image from "next/image";
+import React, { useState, useEffect } from 'react'
 
+
+// 模拟后台数据（未来你可以用 props 或 API 获取）
+const homeData = {
+  bannerImage: "/home.jpg", // 你图片的路径
+  mainSlogan: "专业制造微型充气泵",
+  subSlogan:
+      "公司优势：资深的研发团队、年产能1500万台、86,666平方米制造基地、行业标准主要起草单位、国内外车厂主要战略合作伙伴",
+};
+const homeprofileData = {
+    ProfileText: " 我们是一家专注于微型充气泵研发与制造的高新技术企业，拥有资深的研发团队和86,666平方米现代化制造基地。年产能达1500万台，是行业标准主要起草单位，长期与国内外知名车厂合作，致力于为客户提供高品质的产品与解决方案。",
+    CompanyImage: "/company.jpg"
+}
+
+const partnerLogos = [
+    { src: "/partners/lix.jpg", alt: "理想" },
+    { src: "/partners/nio.png", alt: "蔚来" },
+    { src: "/partners/honda.jpg", alt: "本田"},
+    { src: "/partners/toyota.png", alt: "丰田" },
+    { src: "/partners/vw.png", alt: "大众" },
+    { src: "/partners/bmw.jpg", alt: "宝马" }
+];
+
+interface PartnerLogo {
+    id: number; // 假设 id 是数字类型
+    src: string;
+    alt: string;
+    // 如果您的 API 返回了 created_at 和 updated_at 并且您可能在组件中使用它们，也可以添加
+    created_at?: string; 
+    updated_at?: string;
+}
+  
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    //const { bannerImage, mainSlogan, subSlogan } =
+    //const {ProfileText, CompanyImage} = homeprofileData
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+    const [bannerImage, setBannerImage] = useState("/home.jpg");
+    const [mainSlogan, setMainSlogan] = useState("专业制造微型充气泵");
+    const [subSlogan, setSubSlogan] = useState("公司优势：资深的研发团队、年产能1500万台、86,666平方米制造基地、行业标准主要起草单位、国内外车厂主要战略合作伙伴");
+    
+    const [ProfileText, setProfileText] = useState("是一家专注于微型充气泵研发与制造的高新技术企业，拥有资深的研发团队和86,666平方米现代化制造基地。年产能达1500万台，是行业标准主要起草单位，长期与国内外知名车厂合作，致力于为客户提供高品质的产品与解决方案。");
+    const [CompanyImage, setCompanyImage] = useState("/company.jpg");
+    
+    //const [src, setSrc] = useState("/partners/lix.jpg");
+    //const [alt, setAlt] = useState("理想");
+    const [partnerLogos, setPartnerLogos] = useState<PartnerLogo[]>([]);
+    //const [posthomedataloading, setposthomedataloading] = useState(false);
+    
+
+    useEffect(() => {
+        fetchhomeData()
+        fetchhomeprofileData()
+        fetchPartnerLogos()    
+        ;
+    }, [])
+    const fetchhomeData = async () => {
+        try {
+            // 发起API请求获取首页数据
+            const res = await fetch('/api/gethomedata')
+            const json = await res.json()
+            const data = json.data[0]
+            // 更新页面状态
+            // 需要使用 useState 来定义状态和对应的 setter
+            setBannerImage(data.bannerImage)
+            setMainSlogan(data.mainSlogan)
+            setSubSlogan(data.subSlogan)
+        } catch (error) {
+            // 错误处理
+            console.error('获取首页数据失败:', error)
+        }
+    }
+
+    const fetchhomeprofileData = async () => {
+        try {
+            const res = await fetch('/api/gethomeprofileData')
+            const json = await res.json()
+            const data = json.data[0]
+            // 新增公司简介相关状态更新
+            setProfileText(data.ProfileText)
+            setCompanyImage(data.CompanyImage)
+        } catch (error) {
+            console.error('获取数据失败:', error)
+        }
+    }
+
+    const fetchPartnerLogos = async () => {
+        try {
+            const res = await fetch('/api/getpartnerLogos');
+            const json = await res.json();
+            if (json.data) {
+                setPartnerLogos(json.data);
+            } else {
+                console.error('获取合作伙伴 logos 失败: 数据格式不正确', json);
+                setPartnerLogos([]); // 设置为空数组以避免渲染错误
+            }
+        } catch (error) {
+            console.error('获取合作伙伴 logos 失败:', error);
+            setPartnerLogos([]); // 发生错误时也设置为空数组
+        }
+    };
+
+    return (
+      <main>
+          <div className="relative w-full">
+              {/* 背景图容器，自动按比例撑高 */}
+              <div className="relative w-full aspect-[16/7]">
+                  <Image
+                      src={bannerImage}
+                      alt="首页背景图"
+                      fill
+                      style={{objectFit: "cover"}}
+                      priority
+                  />
+              </div>
+              {/* 内容部分 */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-white text-center">
+                  <h1 className="text-3xl md:text-5xl font-bold mb-6 text-[#DD773F]">
+                      {mainSlogan}
+                  </h1>
+                  <p className="text-xl md:text-2xl max-w-5xl">
+                      {subSlogan}
+                  </p>
+              </div>
+          </div>
+
+
+          <section className="w-full px-6 py-16 bg-white">
+              <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
+                  {/* 左侧：公司简介 */}
+                  <div className="flex-1 text-center md:text-left">
+                      <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#DD773F] font-serif">
+                          ABOUT COMPANY
+                      </h2>
+                      <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#DD773F]">
+                          公司简介
+                      </h2>
+                      <p className="text-lg leading-relaxed text-gray-700">
+                          {ProfileText}
+                      </p>
+                  </div>
+
+                  {/* 右侧：公司图片 */}
+                  <div className="flex-1 w-full">
+                      <img
+                          src={CompanyImage}
+                          alt="公司图片"
+                          className="w-full h-auto rounded-lg shadow-lg object-cover"
+                      />
+                  </div>
+              </div>
+          </section>
+
+          <section className="w-full px-6 py-16 bg-gray-50">
+              <div className="max-w-7xl mx-auto text-center">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#DD773F] font-serif">
+                      COOPERATIVE PARTNER
+                  </h2>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-10 text-[#DD773F]">合作伙伴</h2>
+
+                  {/* 外层flex用于居中网格 */}
+                  <div className="flex justify-center">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                          {partnerLogos.map((logo) => (
+                              <div
+                                  key={logo.id} // 修改这里，使用 logo.id 作为 key
+                                  className="bg-white p-4 rounded shadow hover:shadow-md transition flex flex-col items-center text-center"
+                              >
+                                  <img
+                                      src={logo.src}
+                                      alt={logo.alt}
+                                      className="w-full h-auto object-contain"
+                                  />
+                                  <p className="text-lg leading-relaxed text-gray-700 mt-2">
+                                      {logo.alt}
+                                  </p>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+              </div>
+          </section>
+
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
   );
 }
