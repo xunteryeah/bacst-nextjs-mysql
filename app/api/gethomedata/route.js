@@ -1,14 +1,6 @@
 import { NextResponse } from "next/server";
 import { pool } from '@/lib/db'
 
-export function verifyApiKey(request) {
-    const apiKey = request.headers.get("x-api-key");
-    if (!apiKey || apiKey !== process.env.ADMIN_SECRET_KEY) {
-        return NextResponse.json({ error: "无效密钥" }, { status: 403 });
-    }
-    return null; // 表示验证通过
-}
-
 export async function GET(request) {
     
     try {

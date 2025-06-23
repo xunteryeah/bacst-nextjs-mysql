@@ -14,7 +14,6 @@ const navItems = [
     { name: "资讯中心", href: "/news" },
     { name: "投资与合作", href: "/investment" },
     { name: "联系我们", href: "/contact" },
-    { name: "登入", href: "/admin" },
 ];
 
 export default function Navbar() {
@@ -22,7 +21,7 @@ export default function Navbar() {
     return (
         <nav className="w-full bg-white shadow-md p-4">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
-                <Link href="/public" className="flex items-center space-x-2">
+                <Link href="/" className="flex items-center space-x-2">
                     <Image
                         src="/bakesit_logo_o.svg"
                         alt="Bakesit 图标"
