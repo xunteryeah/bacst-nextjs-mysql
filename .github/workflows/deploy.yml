@@ -12,6 +12,24 @@ jobs:
       contents: read
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download archive
+        run: |
+          # Create a tar archive without node_modules
+          tar --exclude='node_modules' --exclude='.next' --exclude='.git' -czf /tmp/project.tar.gz .
+
+      - name: Transfer archive to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "/tmp/project.tar.gz"
+          target: "/tmp"
+          overwrite: true
+
       - name: Deploy on server
         uses: appleboy/ssh-action@v1
         with:
@@ -21,18 +39,11 @@ jobs:
           command_timeout: 20m
           script: |
             set -e
-            cd /opt/apps
+            cd /opt/apps/bacst-nextjs-mysql
 
-            # Clone or pull the latest code
-            if [ -d "bacst-nextjs-mysql/.git" ]; then
-              cd bacst-nextjs-mysql
-              git fetch origin main
-              git reset --hard origin/main
-            else
-              rm -rf bacst-nextjs-mysql
-              git clone https://github.com/xunteryeah/bacst-nextjs-mysql.git
-              cd bacst-nextjs-mysql
-            fi
+            # Extract the archive
+            tar -xzf /tmp/project.tar.gz -C /opt/apps/bacst-nextjs-mysql
+            rm -f /tmp/project.tar.gz
 
             # Create .env file with secrets
             cat > .env << 'ENVEOF'
