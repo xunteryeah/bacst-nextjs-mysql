@@ -54,7 +54,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "/tmp/image.tar.gz"
           target: "/tmp"
-          strip_components: 2
 
   deploy:
     needs: build
