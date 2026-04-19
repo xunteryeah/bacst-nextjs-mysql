@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local asset sources (not for deployment)
+*.pptx
+副本网站图片_extracted/

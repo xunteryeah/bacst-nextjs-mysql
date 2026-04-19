@@ -19,8 +19,16 @@ export async function GET(request) {
         if (rows.length === 0) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404 })
         }
+        const row = rows[0]
+        const parseJsonField = (v, fallback) => {
+            if (v == null || v === '') return fallback
+            if (typeof v !== 'string') return v
+            try { return JSON.parse(v) } catch { return fallback }
+        }
+        row.images = parseJsonField(row.images, [])
+        row.specs = parseJsonField(row.specs, [])
         // 返回 JSON 格式数据，结构为 { data: {...} }
-        return NextResponse.json({ data: rows[0] }, { status: 200 })
+        return NextResponse.json({ data: row }, { status: 200 })
     } catch (error) { 
         console.error('Error fetching product:', error)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

@@ -90,7 +90,10 @@ export default function ProductsPage() {
             setBrandIntroduction(data.brandIntroduction)
             setOperationImage(data.operationImage)
             setManagementIdea(data.managementIdea)
-            setDeclaration(data.declaration)
+            try {
+                const parsed = typeof data.declaration === 'string' ? JSON.parse(data.declaration) : data.declaration;
+                if (Array.isArray(parsed)) setDeclaration(parsed);
+            } catch { /* keep default */ }
         } catch (error) {
             // 错误处理
             console.error('获取首页数据失败:', error)
