@@ -134,7 +134,7 @@ export default function Home() {
                   {/* 左侧：公司简介 */}
                   <div className="flex-1 text-center md:text-left">
                       <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#DD773F] font-serif">
-                          ABOUT COMPANY
+                          ABOUT BRAND
                       </h2>
                       <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#DD773F]">
                           品牌介绍
