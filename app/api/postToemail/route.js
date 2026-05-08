@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendEmail } from "@/lib/senEmail";
 
 export async function POST(request) {
     try {
@@ -8,6 +9,8 @@ export async function POST(request) {
         if (!name || !tophone || !message || !purpose) {
             return NextResponse.json({ error: "缺少必要字段" }, { status: 400 });
         }
+
+        await sendEmail({ name, tophone, message, purpose });
 
         return NextResponse.json({
             message: 'Data inserted successfully',
