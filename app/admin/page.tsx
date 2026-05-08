@@ -704,7 +704,7 @@ export default function AdminPage() {
     e.preventDefault();
     setpostaboutDataloading(true);
     try {
-      const res = await fetch("/api/postaboutdata", {
+      const res = await fetch("/api/postaboutData", {
         method: "POST",
         headers: jsonAuthHeaders(),
         body: JSON.stringify({ aboutBanner, mainTitle, subTitle }),
@@ -728,7 +728,7 @@ export default function AdminPage() {
     e.preventDefault();
     setpostaboutdetailDataloading(true);
     try {
-      const res = await fetch("/api/postaboutdetaildata", {
+      const res = await fetch("/api/postaboutdetailData", {
         method: "POST",
         headers: jsonAuthHeaders(),
         body: JSON.stringify({ AboutText, AboutImage }),
@@ -1557,7 +1557,7 @@ export default function AdminPage() {
                 const formData = new FormData();
                 formData.append("file", file);
                 try {
-                  const response = await fetch("/api/upload-pdf", { method: "POST", body: formData } as RequestInit);
+                  const response = await fetch("/api/uploadpdf", { method: "POST", body: formData } as RequestInit);
                   if (response.ok) {
                     const data = await response.json();
                     setPdfUrl(data.filePath);

@@ -7,13 +7,11 @@ export async function POST(request) {
   if (authError) return authError;
 
   try {
-    const connection = await pool.getConnection();
     const data = await request.json();
-    const [result] = await connection.query(
+    const [result] = await pool.query(
       'INSERT INTO job_categories SET ?',
       data
     );
-    connection.release();
     return NextResponse.json({ message: 'Data inserted successfully', insertId: result.insertId }, { status: 201 });
   } catch (error) {
     console.error('Error inserting job category:', error);

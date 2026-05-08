@@ -137,7 +137,7 @@ export default function Home() {
                           ABOUT COMPANY
                       </h2>
                       <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#DD773F]">
-                          公司简介
+                          品牌介绍
                       </h2>
                       <p className="text-lg leading-relaxed text-gray-700">
                           {ProfileText}

@@ -10,12 +10,8 @@ export async function GET(request) {
         if (!id) {
             return NextResponse.json({ error: 'ID is required' }, { status: 400 })
         }
-        // 从连接池获取连接
-        const connection = await pool.getConnection()
         // 执行查询，根据 id 获取产品数据
-        const [rows] = await connection.query('SELECT * FROM products WHERE id = ?', [id])
-        // 释放连接
-        connection.release()
+        const [rows] = await pool.query('SELECT * FROM products WHERE id = ?', [id])
         if (rows.length === 0) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404 })
         }

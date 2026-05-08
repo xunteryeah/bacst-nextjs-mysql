@@ -15,12 +15,10 @@ export async function DELETE(request) {
                 { status: 400 }
             );
         }
-        const connection = await pool.getConnection();
-        const [result] = await connection.query(
+        const [result] = await pool.query(
             'DELETE FROM certifications WHERE title = ?',
             [title]
         );
-        connection.release();
         if (result.affectedRows === 0) {
             return NextResponse.json(
                 { error: "未找到匹配的记录" },

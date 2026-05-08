@@ -17,13 +17,11 @@ export async function DELETE(request) {
                 { status: 400 }
             );
         }
-        const connection = await pool.getConnection();
         // 执行删除操作
-        const [result] = await connection.query(
+        const [result] = await pool.query(
             'DELETE FROM partnerLogos WHERE alt = ?',
             [alt]
         );
-        connection.release();
         // 检查是否成功删除
         if (result.affectedRows === 0) {
             return NextResponse.json(

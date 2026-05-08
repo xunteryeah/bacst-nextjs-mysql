@@ -12,11 +12,7 @@ export async function DELETE(request) {
     if (!category) {
       return NextResponse.json({ error: '缺少必要参数: category' }, { status: 400 });
     }
-
-    const connection = await pool.getConnection();
-    const [result] = await connection.query('DELETE FROM job_categories WHERE category = ?', [category]);
-    connection.release();
-
+    const [result] = await pool.query('DELETE FROM job_categories WHERE category = ?', [category]);
     if (result.affectedRows === 0) {
       return NextResponse.json({ error: '未找到匹配的记录' }, { status: 404 });
     }
