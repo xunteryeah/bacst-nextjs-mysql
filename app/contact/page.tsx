@@ -3,18 +3,12 @@
 import Image from "next/image";
 import React, { useState, useEffect } from 'react'
 
-const contactBg = "/contact-bg.jpg"; // 请替换为你自己的大图路径
-const address = "上海市奉贤区海湾旅游区奉炮公路19999号";
-const phone = "15000256347";
-const adddress = "宝山山路10002号";
-const email = "Daniel.sun815@outlook.com";
-
 export default function ContactPage() {
 
   const [contactBg, setContactBg] = useState("/contact-bg.jpg");
-  const [address, setaddress] = useState("上海市奉贤区海湾旅游区奉炮公路1368号阿莱德科技园5号楼2楼");
+  const [addresses, setAddresses] = useState<string[]>(["上海市奉贤区海湾旅游区奉炮公路1368号阿莱德科技园5号楼2楼"]);
   const [phone, setphone] = useState("15000256347");
-  const [adddress, setadddress] = useState("浙江省宁波市慈溪市周巷镇开发东路488号3楼");
+  const [factoryAddress, setFactoryAddress] = useState("浙江省宁波市慈溪市周巷镇开发东路488号3楼");
   const [email, setEmail] = useState("Daniel.sun815@outlook.com");
 
   useEffect(() => {
@@ -82,9 +76,12 @@ export default function ContactPage() {
       // 更新页面状态
       // 需要使用 useState 来定义状态和对应的 setter
       setContactBg(data.contactBg)
-      setaddress(data.address)
+      const list = Array.isArray(data.address)
+        ? data.address.filter((a: unknown): a is string => typeof a === 'string' && a.trim() !== '')
+        : (data.address ? [data.address] : [])
+      if (list.length > 0) setAddresses(list)
       setphone(data.phone)
-      setadddress(data.adddress)
+      setFactoryAddress(data.factoryAddress ?? "")
       setEmail(data.email)
     } catch (error) {
       // 错误处理
@@ -112,8 +109,14 @@ export default function ContactPage() {
         <div className="md:w-1/2 w-full mb-10 md:mb-0 pr-0 md:pr-12">
           <h2 className="text-3xl font-bold text-gray-700 mb-6">联系我们</h2>
           <div className="text-sm space-y-4 text-gray-600">
-            <p><span className="font-semibold">公司地址：</span>{address}</p>
-            <p><span className="font-semibold">工厂地址：</span>{adddress}</p>
+            {addresses.map((addr, i) => (
+              <p key={i}>
+                <span className="font-semibold">公司地址{addresses.length > 1 ? i + 1 : ''}：</span>{addr}
+              </p>
+            ))}
+            {factoryAddress && (
+              <p><span className="font-semibold">工厂地址：</span>{factoryAddress}</p>
+            )}
             <p><span className="font-semibold">联系电话：</span>{phone}</p>
             <p><span className="font-semibold">邮箱：</span>{email}</p>
           </div>

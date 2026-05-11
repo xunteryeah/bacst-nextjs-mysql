@@ -53,6 +53,24 @@ jobs:
             echo "TENCENT_COS_BUCKET=${{ secrets.TENCENT_COS_BUCKET }}" >> .env
             echo "TENCENT_COS_REGION=${{ secrets.TENCENT_COS_REGION }}" >> .env
 
+            # Ensure MySQL is up and healthy before running migrations
+            docker compose up -d mysql
+            for i in $(seq 1 30); do
+              if docker compose exec -T mysql mysqladmin ping -h localhost --silent >/dev/null 2>&1; then
+                echo "MySQL is ready"
+                break
+              fi
+              echo "Waiting for MySQL... ($i/30)"
+              sleep 2
+            done
+
+            # Run idempotent DB migrations (safe to re-run every deploy)
+            for migration in sql/migration-*.sql; do
+              [ -f "$migration" ] || continue
+              echo "Applying $migration"
+              docker compose exec -T mysql sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" bacst' < "$migration"
+            done
+
             # Build and start containers
             docker compose build --no-cache
             docker compose up -d

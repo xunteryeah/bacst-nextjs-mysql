@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS addressData (
   id INT AUTO_INCREMENT PRIMARY KEY,
   contactBg VARCHAR(512),
   email VARCHAR(255),
-  address TEXT,
+  address JSON,
   phone VARCHAR(50),
-  adddress TEXT,
+  factoryAddress TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -166,8 +166,8 @@ INSERT INTO products (name, description, mainimage, category, images, specs) VAL
 ('便携式充电桩 C3', '新能源汽车便携式交流充电桩，支持国标GB/T接口，适配市面主流新能源车型。IP67防水等级，适合家用及户外使用。', '/products/product3.jpg', '新能源充电桩', '["/products/product3.jpg","/products/product4.jpg"]', '[["额定功率","7kW"],["输入电压","220V AC"],["充电接口","GB/T"],["防护等级","IP67"],["线缆长度","5m"]]');
 
 -- 联系方式
-INSERT INTO addressData (contactBg, email, address, phone, adddress) VALUES
-('/contact-bg.jpg', 'info@bacst.com', '广东省深圳市宝安区新安街道XX路XX号', '0755-12345678', '广东省东莞市XX镇XX工业园区XX号');
+INSERT INTO addressData (contactBg, email, address, phone, factoryAddress) VALUES
+('/contact-bg.jpg', 'info@bacst.com', JSON_ARRAY('广东省深圳市宝安区新安街道XX路XX号'), '0755-12345678', '广东省东莞市XX镇XX工业园区XX号');
 
 -- 关于公司大图
 INSERT INTO aboutData (aboutBanner, mainTitle, subTitle) VALUES

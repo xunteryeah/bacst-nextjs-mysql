@@ -336,8 +336,8 @@ export default function AdminPage() {
   // ==================== Contact states ====================
   const [contactBg, setContactBg] = useState("");
   const [email, setEmail] = useState("");
-  const [adddress, setAdddress] = useState("");
-  const [address, setAddress] = useState("");
+  const [factoryAddress, setFactoryAddress] = useState("");
+  const [addresses, setAddresses] = useState<string[]>([""]);
   const [phone, setPhone] = useState("");
   const [postaddressloading, setpostaddressloading] = useState(false);
 
@@ -678,19 +678,25 @@ export default function AdminPage() {
     e.preventDefault();
     setpostaddressloading(true);
     try {
+      const cleanedAddresses = addresses.map((a) => a.trim()).filter((a) => a !== "");
+      if (cleanedAddresses.length === 0) {
+        addToast("请至少填写一个公司地址", "error");
+        setpostaddressloading(false);
+        return;
+      }
       const res = await fetch("/api/postaddress", {
         method: "POST",
         headers: jsonAuthHeaders(),
-        body: JSON.stringify({ contactBg, email, address, phone, adddress }),
+        body: JSON.stringify({ contactBg, email, address: cleanedAddresses, phone, factoryAddress }),
       });
       const data = await res.json();
       if (res.ok) {
         addToast("联系方式上传成功！", "success");
         setContactBg("");
         setEmail("");
-        setAddress("");
+        setAddresses([""]);
         setPhone("");
-        setAdddress("");
+        setFactoryAddress("");
       } else {
         addToast("上传失败: " + (data.error || "未知错误"), "error");
       }
@@ -1630,22 +1636,50 @@ export default function AdminPage() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">公司地址</label>
-            <input
-              type="text"
-              placeholder="公司地址"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm text-gray-900"
-            />
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-medium text-gray-700">公司地址（第一项必填，其余可选）</label>
+              <button
+                type="button"
+                onClick={() => setAddresses((prev) => [...prev, ""])}
+                className="text-sm text-[#DD773F] hover:underline"
+              >
+                + 添加地址
+              </button>
+            </div>
+            <div className="space-y-2">
+              {addresses.map((value, idx) => (
+                <div key={idx} className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder={idx === 0 ? "公司地址（必填）" : `公司地址${idx + 1}（可选）`}
+                    value={value}
+                    onChange={(e) =>
+                      setAddresses((prev) => prev.map((a, i) => (i === idx ? e.target.value : a)))
+                    }
+                    className="flex-1 border border-gray-300 px-3 py-2 rounded-lg text-sm text-gray-900"
+                  />
+                  {addresses.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setAddresses((prev) => prev.filter((_, i) => i !== idx))
+                      }
+                      className="px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50"
+                    >
+                      删除
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">工厂地址</label>
             <input
               type="text"
               placeholder="工厂地址"
-              value={adddress}
-              onChange={(e) => setAdddress(e.target.value)}
+              value={factoryAddress}
+              onChange={(e) => setFactoryAddress(e.target.value)}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm text-gray-900"
             />
           </div>
